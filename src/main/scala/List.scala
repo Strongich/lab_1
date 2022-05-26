@@ -13,18 +13,29 @@ enum List[+A]:
   }
 
   def concat[A](xs: List[A], ys: List[A]): List[A] = {
-      // tail recursive
-     xs match
+    // tail recursive
+    /*    xs match
       case Nil => ys
-      case Cons(h: A, tl: List[A]) => concat(tl, ys)
+      case Cons(h: A, tl: List[A]) => concat(tl, ys) */
+    // foldRight
+    xs match
+      case Nil => ys
+      case Cons(xh,xt) => Cons(xs,Cons(ys,Nil)).flatMap(identity)
   }
 
   def flatMap[B](f: A => List[B]): List[B] = {
-    this match
+    // tail recursive
+   /*  this match
       case Nil => Nil
-      case Cons(h: A, tl: List[A]) => tl.flatMap(f) // working
+      case Cons(h: A, tl: List[A]) => tl.flatMap(f) */
 
-}
+    // fold right
+    def go[B](xs: List[A], acc: List[B], f: A => List[B]): List[B] = acc match {
+      case Nil => acc
+      case Cons(xh: A,xt: List[A]) => xs.foldRight(acc)((xh,acc)=>f(xh))
+    }
+    go(Nil,Nil,f)
+  }
 
   def zip[B](ys: List[B]): List[(A,B)] =
     def go(xs: List[A], ys: List[B], acc: List[(A, B)]): List[(A, B)] = (xs, ys) match {
@@ -57,6 +68,8 @@ enum List[+A]:
 // Use unit-tests instead
 @main def run() = {
 println("Hello")
+
+
 
 
 
