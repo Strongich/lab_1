@@ -8,30 +8,30 @@ import List.*
 class ListSuite extends FunSuite {
   test("foldRight") {
     val expected = -94
-    val xs = Cons(1,Cons(3,Cons(8,Nil)))
+    val xs = List.of(1,3,8)
     val actual = xs.foldRight(100)(_-_)
     assertEquals(expected, actual)
   }
 
   test("concat") {
-    val expected = Cons("a",Cons("b",Cons("c",Cons("d",Cons("f",Nil)))))
-    val ys = Cons("d",Cons("f",Nil))
-    val xs = Cons("a",Cons("b",Cons("c",Nil)))
+    val expected = List.of("a","b","c","d","f")
+    val ys = List.of("d","f")
+    val xs = List.of("a","b","c")
     val actual = xs.concat(xs,ys)
     assertEquals(expected, actual)
   }
 
   test("flatmap") {
-    val expected = Cons("1",Cons("1",Cons("1",Cons("2",Cons("2",Cons("2",Cons("3",Cons("3",Cons("3",Nil)))))))))
-    val a = Cons(1, Cons(2, Cons(3,Nil)))
-    val actual = a.flatMap(x=> Cons(x.toString,Cons(x.toString,Cons(x.toString,Nil))))
+    val expected = List.of("1","1","1","2","2","2","3","3","3")
+    val a = List.of(1,2,3)
+    val actual = a.flatMap(x=> List.of(x.toString,x.toString,x.toString))
     assertEquals(expected, actual)
   }
 
   test("zip") {
-    val expected = Cons((1,'a'),Cons((2,'b'),Cons((3,'c'),Nil)))
-    val xs = Cons(1,Cons(2,Cons(3,Nil)))
-    val ys = Cons('a',Cons('b',Cons('c',Cons('d',Nil))))
+    val expected = List.of((1,'a'),(2,'b'),(3,'c'))
+    val xs = List.of(1,2,3)
+    val ys = List.of('a','b','c','d')
     val actual = xs.zip(ys)
     assertEquals(expected, actual)
   }

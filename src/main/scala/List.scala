@@ -20,7 +20,7 @@ enum List[+A]:
     }
     go(xs.reverse(xs), ys)
   }
-  
+
   def flatMap[B](f: A => List[B]): List[B] = {
     this match {
       case Nil => Nil
