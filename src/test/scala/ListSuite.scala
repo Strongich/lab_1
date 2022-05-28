@@ -24,7 +24,7 @@ class ListSuite extends FunSuite {
   test("flatmap") {
     val expected = Cons("1",Cons("1",Cons("1",Cons("2",Cons("2",Cons("2",Cons("3",Cons("3",Cons("3",Nil)))))))))
     val a = Cons(1, Cons(2, Cons(3,Nil)))
-    val actual = a.flatMap(a)(x=> Cons(x.toString,Cons(x.toString,Cons(x.toString,Nil))))
+    val actual = a.flatMap(x=> Cons(x.toString,Cons(x.toString,Cons(x.toString,Nil))))
     assertEquals(expected, actual)
   }
 
