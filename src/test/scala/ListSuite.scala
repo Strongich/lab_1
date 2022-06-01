@@ -1,5 +1,4 @@
 package com.tkroman.kpi.y2022.l1
-
 import scala.collection.mutable
 import munit.FunSuite
 
@@ -8,9 +7,33 @@ import List.*
 class ListSuite extends FunSuite {
   test("foldRight") {
     val expected = -94
-    val xs = List.of(1,3,8)
-    val actual = xs.foldRight(100)(_-_)
-    assertEquals(expected, actual)
+    val actual = List.of(1,3,8).foldRight(100)(_-_)
+    assertEquals(expected,actual)
+  }
+
+  test("foldRight old realization for 100000") {
+    interceptMessage[java.lang.StackOverflowError]("Stack over flow!"){
+      List.of().range(100000).foldRight(0)(_ - _)
+    }
+  }
+
+  test("foldRight new realization for 100000") {
+    interceptMessage[java.lang.StackOverflowError]("Stack over flow!") {
+      List.of().range(100000).foldr(List.of().range(100000), 0, _ - _)
+    }
+  }
+
+  test("String Builder for Nil"){
+    val expected = Nil
+    val actual = List.of()
+    assertEquals(expected,actual)
+  }
+
+
+  test("reverse"){
+    val expected = List.of(3,2,1)
+    val actual = List.of(1,2,3).reverse
+    assertEquals(expected,actual)
   }
 
   test("concat") {
@@ -36,9 +59,9 @@ class ListSuite extends FunSuite {
     assertEquals(expected, actual)
   }
   test("partition") {
-    val expected = (Cons(3,Cons(6,Nil)),Cons(1,Cons(2,Cons(4,Cons(5,Cons(7,Nil))))))
-    val xs = Cons(1,Cons(2,Cons(3,Cons(4,Cons(5,Cons(6,Cons(7,Nil)))))))
-    val actual = xs.partition(xs)(x => x%3 == 0)
+    val expected = (List.of(3,6),List.of(1,2,4,5,7))
+    val xs = List.of(1,2,3,4,5,6,7)
+    val actual = xs.partition(x => x%3 == 0)
     assertEquals(expected,actual)
   }
 }
