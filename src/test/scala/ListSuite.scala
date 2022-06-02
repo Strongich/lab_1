@@ -11,16 +11,10 @@ class ListSuite extends FunSuite {
     assertEquals(expected,actual)
   }
 
-  test("foldRight old realization for 100000") {
-    interceptMessage[java.lang.StackOverflowError]("Stack over flow!"){
-      List.of().range(100000).foldRight(0)(_ - _)
-    }
-  }
-
-  test("foldRight new realization for 100000") {
-    interceptMessage[java.lang.StackOverflowError]("Stack over flow!") {
-      List.of().range(100000).foldr(List.of().range(100000), 0, _ - _)
-    }
+  test("foldRight new realization for 100k") {
+    val expected = 50000
+    val actual = List.of().range(100000).foldRight2(List.of().range(100000),0)(_-_)
+    assertEquals(expected,actual)
   }
 
   test("String Builder for Nil"){

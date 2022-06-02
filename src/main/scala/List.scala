@@ -1,35 +1,29 @@
 package com.tkroman.kpi.y2022.l1
 import scala.collection.mutable
+import scala.util.control.TailCalls
+import scala.util.control.TailCalls.TailRec
 
 
 enum List[+A]:
   case Nil
   case Cons(h: A, tl: List[A])
 
-  def foldLeft[B](z:B)(f: (A,B) => B): B = {
-    this match
-      case Nil => z
-      case Cons(xh,xt) => xt.foldLeft( f(xh,z) )(f)
+  def foldLeft[A, B](xs: List[A], z: B)(f: (B, A) => B): B = {
+    def go(xs: List[A], acc: B): B = xs match {
+      case Nil => acc
+      case Cons(xh, xt) => go(xt, f(acc, xh))
+    }
+    go(xs, z)
   }
-
+  
   def foldRight[B](z: B)(f: (A, B) => B): B = {
     this match
       case Nil => z
       case Cons(xh, xt) => f(xh, xt.foldRight(z)(f))
   }
-  def foldRight2[B](z: B)(f: (A, B) => B): B = reverse.foldLeft(z)((a,b)=>f(a,b))
-
-  def foldr[A, B](xs: List[A], acc: B, f: (A, B) => B) = {
-    @scala.annotation.tailrec
-    def go(xs: List[A], acc: B, cont: B => B): B = {
-      xs match {
-        case Nil => cont(acc)
-        case Cons(xh,xt) => go(xt, acc, b => cont(f(xh, b)))
-      }
-    }
-    go(xs, acc, identity)
-  }
-
+  
+  def foldRight2[A,B](xs: List[A],z: B)(f: (A, B) => B): B = xs.foldLeft(xs,z)( (a,b)=>f(b,a) )
+  
   def concat[A](xs: List[A], ys: List[A]): List[A] = {
     @scala.annotation.tailrec
     def go(xs: List[A],acc: List[A]): List[A] = {
@@ -95,7 +89,7 @@ enum List[+A]:
     @scala.annotation.tailrec
     def go(n: Int, acc: List[Int] = Nil): List[Int] = {
       n match
-        case 1 => acc
+        case 0 => acc
         case _ => go(n - 1, Cons(n, acc))
     }
     go(n)
@@ -108,11 +102,8 @@ object List:
 
 @main def run = {
   println("Hello")
-  val a = List.of().range(100000)
-  val actual = a.foldr(a,0,_-_)
-  println(actual)
-
-
-
-
+  val a = Seq.range(1,100000).foldRight(0)(_-_)
+  val b = List.of().range(100000).foldRight2(List.of().range(100000),0)(_-_)
+  println(a)
+  println(b)
 }
