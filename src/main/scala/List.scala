@@ -15,15 +15,15 @@ enum List[+A]:
     }
     go(xs, z)
   }
-  
+
   def foldRight[B](z: B)(f: (A, B) => B): B = {
     this match
       case Nil => z
       case Cons(xh, xt) => f(xh, xt.foldRight(z)(f))
   }
-  
+
   def foldRight2[A,B](xs: List[A],z: B)(f: (A, B) => B): B = xs.foldLeft(xs,z)( (a,b)=>f(b,a) )
-  
+
   def concat[A](xs: List[A], ys: List[A]): List[A] = {
     @scala.annotation.tailrec
     def go(xs: List[A],acc: List[A]): List[A] = {
@@ -102,8 +102,4 @@ object List:
 
 @main def run = {
   println("Hello")
-  val a = Seq.range(1,100000).foldRight(0)(_-_)
-  val b = List.of().range(100000).foldRight2(List.of().range(100000),0)(_-_)
-  println(a)
-  println(b)
 }
