@@ -22,7 +22,7 @@ enum List[+A]:
       case Cons(xh, xt) => f(xh, xt.foldRight(z)(f))
   }
 
-  def foldRight2[A,B](xs: List[A],z: B)(f: (A, B) => B): B = xs.foldLeft(xs,z)( (a,b)=>f(b,a) )
+  def foldRight2[B](z: B)(f: (A, B) => B): B = this.reverse.foldLeft(this,z)( (a,b)=>f(b,a) )
 
   def concat[A](xs: List[A], ys: List[A]): List[A] = {
     @scala.annotation.tailrec
@@ -35,10 +35,6 @@ enum List[+A]:
   }
 
   def flatMap[B](f: A => List[B]): List[B] = {
-    this match {
-      case Nil => Nil
-      case Cons(xh: B, xt: List[A]) => concat(f(xh), xt.flatMap(f))
-    }
     this match {
       case Nil => Nil
       case Cons(xh: A, xt) =>
@@ -85,6 +81,11 @@ enum List[+A]:
       }
     go(new StringBuilder("["),this)
 }
+
+import List.*
+object List:
+  def empty[A]: List[A] = Nil
+  def of[A](xs: A*): List[A] = xs.foldRight(Nil: List[A])(Cons(_, _))
   def range(n: Int): List[Int] = {
     @scala.annotation.tailrec
     def go(n: Int, acc: List[Int] = Nil): List[Int] = {
@@ -95,11 +96,10 @@ enum List[+A]:
     go(n)
   }
 
-import List.*
-object List:
-  def empty[A]: List[A] = Nil
-  def of[A](xs: A*): List[A] = xs.foldRight(Nil: List[A])(Cons(_, _))
-
 @main def run = {
   println("Hello")
+  val expected = Seq.range(1,11).foldRight(0)(_-_) // -50
+  val actual = List.range(10).foldRight2(0)(_-_) // 50
+  println(expected)
+  println(actual)
 }
