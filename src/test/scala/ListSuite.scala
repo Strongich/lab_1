@@ -12,12 +12,12 @@ class ListSuite extends FunSuite {
   }
   test("foldRight new realization for 10k") {
     val expected = Seq.range(1,10001).foldRight(0)(_-_)
-    val actual = List.of().range(10000).foldRight2(0)(_-_)
+    val actual = List.range(10000).foldRight2(0)(_-_)
     assertEquals(expected,actual)
   }
   test("foldRight new realization for 100k") {
     val expected = Seq.range(1,100001).foldRight(0)(_-_)
-    val actual = List.of().range(100000).foldRight2(0)(_-_)
+    val actual = List.range(100000).foldRight2(0)(_-_)
     assertEquals(expected,actual)
   }
 
@@ -42,14 +42,22 @@ class ListSuite extends FunSuite {
     val expected = List.of(1,2,3,4,5,6)
     val xs = List.of(1,2,3)
     val ys = List.of(4,5,6)
-    val actual = xs.concat(xs,ys)
-    assertEquals(expected, actual)
+    val actual = xs.concat(ys)
+    assertEquals(actual,expected)
   }
   test("concat with diff length") {
     val expected = List.of("a","b","c","d","f")
     val ys = List.of("d","f")
     val xs = List.of("a","b","c")
-    val actual = xs.concat(xs,ys)
+    val actual = xs.concat(ys)
+    assertEquals(expected, actual)
+  }
+
+  test("concat with diff types ") {
+    val expected = List.of("adgdg",1,2,3, "fdgdfg")
+    val ys = List.of(1,2,3, "fdgdfg")
+    val xs = List.of("adgdg")
+    val actual = xs.concat(ys)
     assertEquals(expected, actual)
   }
 
@@ -59,7 +67,7 @@ class ListSuite extends FunSuite {
     val actual = a.flatMap(x=> List.of(x.toString,x.toString,x.toString))
     assertEquals(expected, actual)
   }
-  test("flatmap for chars") {
+  test("flatmap for strings") {
     val expected = List.of("a","a","a","b","b","b","c","c","c")
     val a = List.of("a","b","c")
     val actual = a.flatMap(x=> List.of(x.toString,x.toString,x.toString))

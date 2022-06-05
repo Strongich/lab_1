@@ -8,12 +8,12 @@ enum List[+A]:
   case Nil
   case Cons(h: A, tl: List[A])
 
-  def foldLeft[A, B](xs: List[A], z: B)(f: (B, A) => B): B = {
+  def foldLeft[B](z: B)(f: (B, A) => B): B = {
     def go(xs: List[A], acc: B): B = xs match {
       case Nil => acc
       case Cons(xh, xt) => go(xt, f(acc, xh))
     }
-    go(xs, z)
+    go(this, z)
   }
 
   def foldRight[B](z: B)(f: (A, B) => B): B = {
@@ -22,24 +22,16 @@ enum List[+A]:
       case Cons(xh, xt) => f(xh, xt.foldRight(z)(f))
   }
 
-  def foldRight2[B](z: B)(f: (A, B) => B): B = this.reverse.foldLeft(this,z)( (a,b)=>f(b,a) )
+  def foldRight2[B](z: B)(f: (A, B) => B): B = this.reverse.foldLeft(z)((a, b) => f(b, a))
 
-  def concat[A](xs: List[A], ys: List[A]): List[A] = {
-    @scala.annotation.tailrec
-    def go(xs: List[A],acc: List[A]): List[A] = {
-      xs match
-        case Nil => acc
-        case Cons(xh,xt) => go(xt, Cons(xh, acc))
-    }
-    go(xs.reverse, ys)
-  }
+  def concat[B >: A](ys: List[B]): List[B] = this.foldRight(ys)( Cons(_,_) )
 
   def flatMap[B](f: A => List[B]): List[B] = {
     this match {
       case Nil => Nil
       case Cons(xh: A, xt) =>
         val acc: List[B] = Nil
-        foldRight(acc) { (a, temp) => concat(f(a),temp) }
+        foldRight(acc) { (a, b) => f(a).concat(b) }
     }
   }
   
@@ -58,7 +50,7 @@ enum List[+A]:
     def go(xs: List[A])(left: List[A], right: List[A]): (List[A], List[A]) = xs match {
       case Nil => (left.reverse, right.reverse)
       case Cons(xh, xt) =>  if pred(xh) then go(xt)(Cons(xh, left), right)
-      else go(xt)(left, Cons(xh, right))
+        else go(xt)(left, Cons(xh, right))
  }
     go(this)(Nil,Nil)
   }
@@ -98,8 +90,5 @@ object List:
 
 @main def run = {
   println("Hello")
-  val expected = Seq.range(1,11).foldRight(0)(_-_) // -50
-  val actual = List.range(10).foldRight2(0)(_-_) // 50
-  println(expected)
-  println(actual)
 }
+
