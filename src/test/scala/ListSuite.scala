@@ -21,11 +21,6 @@ class ListSuite extends FunSuite {
     assertEquals(expected,actual)
   }
 
-  test("String Builder for Nil"){
-    val expected = Nil
-    val actual = List.of()
-    assertEquals(expected,actual)
-  }
   test("String Builder"){
     val expected = "[1, 2, 3, 4, 5, 6]"
     val actual = List.of(1,2,3,4,5,6).toString
